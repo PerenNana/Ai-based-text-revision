@@ -1,0 +1,39 @@
+import streamlit as sl
+
+sl.title("✍️ Basic AI For Text Revision")
+
+sl.subheader("How to use it?")
+
+sl.text("You need to write your text here, and it will be revised after clicking on a button.")
+
+sl.markdown("---")
+
+sl.header("Original Text")
+
+with sl.chat_message("user"):
+    sl.write("**Original Text**")
+
+user_input = sl.text_area("Enter your text here!", height=200)
+
+# Button
+submit = sl.button("Start Revision")
+
+sl.markdown("---")
+
+sl.header("Revised Text")
+
+with sl.chat_message("assistant"):
+    sl.write("**Revised Text**")
+
+if submit:
+    # Placeholder response for now - replace later with API call
+    revised_text = f"{user_input}"
+else:
+    revised_text = ""
+
+revised_box = sl.text_area("Here is your revised text:", value=revised_text, height=200)
+
+# ⏩ Right-align the copy button using columns
+col1, col2, col3 = sl.columns([8, 3, 2])  # Adjust ratio as needed
+with col3:
+    sl.button("📋 Copy", key="copy_button")
