@@ -62,7 +62,8 @@ async def assist_report(text: str, mode: str = "Style Improvements") -> str:
         prompt = (f"Formulate the following text stylishly and politely, using elegant language. "
                   f"ONLY GIVE THE CORRECTED TEXT BACK WITHOUT 'Here is the formulated text':\n\n{text}")
     elif mode == "Blended Style":
-        prompt = f"Improve the blended style of the following text. Do not change the meaning or structure ONLY GIVE THE CORRECTED TEXT BACK WITHOUT 'Here is the corrected text':\n\n{text}"
+        prompt = (f"Formulate the following text in a friendly, charming, and readable manner a mix of informality and style using emojis. "
+                  f"ONLY GIVE THE CORRECTED TEXT BACK WITHOUT 'Here is the corrected text':\n\n{text}")
     try:
         response = await query_ollama(prompt)
         return response.strip()

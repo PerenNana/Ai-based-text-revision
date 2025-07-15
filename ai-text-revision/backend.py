@@ -14,6 +14,12 @@ class TextRequest(BaseModel):
 @app.post("/revise")
 async def assist_endpoint(request: TextRequest):
 
+    """
+    API endpoint for text revision
+    :param request: request object containing text and mode
+    :return: revised text
+    """
+
     original_text = request.text
     mode = request.mode
 
@@ -22,6 +28,13 @@ async def assist_endpoint(request: TextRequest):
 
 
 async def query_ollama(prompt: str) -> str:
+
+    """
+    Query the Ollama API
+    :param prompt: prompt
+    :return: response from Ollama
+    """
+
     async with httpx.AsyncClient(timeout=30.0) as client:
         response = await client.post(
             "http://localhost:11434/api/generate",
@@ -39,6 +52,13 @@ async def query_ollama(prompt: str) -> str:
 
 
 async def assist_report(text: str, mode: str = "Style Improvements") -> str:
+
+    """
+    Assist report
+    :param text: text to be corrected
+    :param mode: mode of correction, improvement
+    :return: revised text
+    """
 
     if not text.strip():
         return""
