@@ -42,7 +42,8 @@ async def query_ollama(prompt: str) -> str:
                 "model": "llama3",
                 "prompt": prompt,
                 "stream": False
-            }
+            },
+            timeout=90
         )
         try:
             data = json.loads(response.text)

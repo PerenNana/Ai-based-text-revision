@@ -23,23 +23,47 @@ sl.header("Original Text")
 with sl.chat_message("user"):
     sl.write("**Original Text**")
 
-user_input = sl.text_area(
-    "Enter your text here!", 
-    key="original_text",
-    height=200,
-    help="Enter your text and start the assistance.")
+if "original_text" not in sl.session_state:
+    sl.session_state.original_text = ""
 
-sl.markdown("**📝 Select the type of revision or formulation you want:**")
+col1, col2 = sl.columns([5, 1])
+
+# Handle the clear button BEFORE text_area is rendered
+with col2:
+
+    sl.markdown("<br>", unsafe_allow_html=True)  # Add some spacing
+
+    clear_button = sl.button("Clear Input")
+
+    if clear_button and sl.session_state.original_text:
+        sl.session_state.original_text = ""
+        sl.success("Cleared.")
+    elif clear_button and sl.session_state.original_text == "":
+        sl.error("Please enter some text first.")
+
+with col1:
+    user_input = sl.text_area(
+        "Enter your text here!",
+        value=sl.session_state.original_text,
+        key="original_text",
+        height=200,
+        help="Enter your text and start the assistance.")
+
+sl.markdown("---")
+
+sl.header("Options")
+
+sl.subheader("📝 Select the type of revision or formulation.")
 
 mode = sl.radio(
     "Select the revision or formulation type you want:",
     options=["Grammar Issues", "Style Improvements", "Mixed Issues", "Social Style", "Elegant Style", "Blended Style"],
     index=1,
-    help="Select a type you want."
+    help="Select one type."
 )
 
 # Button
-submit = sl.button("Get Assistance")
+submit = sl.button("Get Assistance", type="primary")
 
 sl.markdown("---")
 
@@ -71,33 +95,37 @@ if submit:
 
             with sl.chat_message("assistant"):
                 sl.write("**Revised Text**")
-            sl.text_area(
-                "Here is your revised text:",
-                value=revised_text,
-                height=200,
-                key="revised_text_output",
-                help="Copy your revised text with the button beneath.")
 
-        # ⏩ Right-align the copy button using columns
-        components.html(f"""
-            <script>
-            function copyToClipboard() {{
-                navigator.clipboard.writeText(document.getElementById("copyTarget").innerText);
-                alert("📋 Copied to clipboard!");
-            }}
-            </script>
-            <div style="text-align:right;">
-                <button onclick="copyToClipboard()" style="
-                    background-color: #262730;
-                    color: white;
-                    border: 1px solid #5c5c5c;
-                    border-radius: 10px;
-                    padding: 8px 16px;
-                    font-size: 14px;
-                    cursor: pointer;
-                ">📋 Copy</button>
-            </div>
-            <div id="copyTarget" style="display:none;">{revised_text}</div>
-        """, height=60)
+            col1, col2 = sl.columns([5, 1])
 
-#Task: expand expander after clicking on start revision button
+            with col1:
+                sl.text_area(
+                    "Here is your revised text:",
+                    value=revised_text,
+                    height=200,
+                    key="revised_text_output",
+                    help="Copy your revised text with the button beneath.")
+
+            with col2:
+                # ⏩ Right-align the copy button using columns
+                sl.markdown("<br>", unsafe_allow_html=True)  # Add some spacing
+                components.html(f"""
+                            <script>
+                            function copyToClipboard() {{
+                                navigator.clipboard.writeText(document.getElementById("copyTarget").innerText);
+                                alert("📋 Copied to clipboard!");
+                            }}
+                            </script>
+                            <div style="text-align:right;">
+                                <button onclick="copyToClipboard()" style="
+                                    background-color: #262730;
+                                    color: white;
+                                    border: 1px solid #5c5c5c;
+                                    border-radius: 10px;
+                                    padding: 8px 16px;
+                                    font-size: 14px;
+                                    cursor: pointer;
+                                ">📋 Copy</button>
+                            </div>
+                            <div id="copyTarget" style="display:none;">{revised_text}</div>
+                        """, height=60)
